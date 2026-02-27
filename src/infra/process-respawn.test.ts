@@ -42,6 +42,20 @@ describe("restartGatewayProcessWithFreshPid", () => {
     expect(spawnMock).not.toHaveBeenCalled();
   });
 
+  it("returns supervised when OPENCLAW_LAUNCHD_LABEL is present", () => {
+    process.env.OPENCLAW_LAUNCHD_LABEL = "ai.openclaw.gateway";
+    const result = restartGatewayProcessWithFreshPid();
+    expect(result.mode).toBe("supervised");
+    expect(spawnMock).not.toHaveBeenCalled();
+  });
+
+  it("returns supervised when OPENCLAW_SYSTEMD_UNIT is present", () => {
+    process.env.OPENCLAW_SYSTEMD_UNIT = "openclaw-gateway.service";
+    const result = restartGatewayProcessWithFreshPid();
+    expect(result.mode).toBe("supervised");
+    expect(spawnMock).not.toHaveBeenCalled();
+  });
+
   it("spawns detached child with current exec argv", () => {
     delete process.env.OPENCLAW_NO_RESPAWN;
     clearSupervisorHints();
